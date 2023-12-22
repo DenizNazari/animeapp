@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <?php
 include('baglan.php');
-include('nav_bar.php');
 
 $sorgu_anime = mysqli_query($conn, "SELECT * FROM animes WHERE animecode='".$_GET['animeid']."'");
 
@@ -10,6 +9,51 @@ if (!$sorgu_anime) {
 }
 
 $satir_anime = mysqli_fetch_array($sorgu_anime);
+?>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANIBASE <?php echo $satir_anime['name']?> </title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/templatemo-style.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+
+<style>
+.tm-text-primary { color: <?php echo $satir_anime['text_color']?>; }
+.navbar-brand {
+    color:<?php echo $satir_anime['text_color']?>;
+    font-size: 1.9rem;
+}
+.tm-text-gray-dark{
+     color: <?php echo $satir_anime['text_color_2']?>; 
+}
+p, .tm-text-gray{
+    color:<?php echo $satir_anime['text_color']?>;
+
+}
+.addtxt {
+    background-color:<?php echo $satir_anime['page_color_1']?>;
+
+}
+.form-control {
+    color:<?php echo $satir_anime['text_color']?> ;
+}
+</style>
+</head>
+<body style="background-color:<?php echo $satir_anime['page_color_1']?>;">
+    <div id="loader-wrapper">
+        <div id="loader"></div>
+
+        <div class="loader-section section-left"></div>
+        <div class="loader-section section-right"></div>
+
+    </div>
+    <?php
+
+include('nav_bar.php');
 ?>
     <div class="tm-hero d-flex justify-content-center align-items-center" data-parallax="scroll" data-image-src="sitepng\banner_<?php echo $satir_anime['imgnames']?>.jpg">
 

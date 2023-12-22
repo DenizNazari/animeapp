@@ -1,17 +1,58 @@
 <!DOCTYPE html>
 <?php
 include('baglan.php');
+?>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANIBASE</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/templatemo-style.css">
+
+</head>
+
+<body>
+    <!-- Page Loader -->
+    <div id="loader-wrapper">
+        <div id="loader"></div>
+
+        <div class="loader-section section-left"></div>
+        <div class="loader-section section-right"></div>
+
+    </div>
+<?php
+
 include('nav_bar.php');
 ?>
-
-    <div class="tm-hero d-flex justify-content-center align-items-center" data-parallax="scroll" data-image-src="img\indir.gif">
+    <!-- <div class="tm-hero d-flex justify-content-center align-items-center" data-parallax="scroll" data-image-src="img\indir.gif" >
         <form class="d-flex tm-search-form">
             <input class="form-control tm-search-input" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success tm-search-btn" type="submit">
                 <i class="fas fa-search"></i>
             </button>
         </form>
+    </div> -->
+    <div class="tm-hero d-flex justify-content-center align-items-center" data-parallax="scroll" data-image-src="img\indir.gif">
+    <form class="d-flex tm-search-form" method="GET" action="index.php">
+        <input class="form-control tm-search-input" type="search" name="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success tm-search-btn" type="submit">
+            <i class="fas fa-search"></i>
+        </button>
+    </form>
     </div>
+
+    <?php
+if (isset($_GET['query'])) {
+    $search_query = mysqli_real_escape_string($conn, $_GET['search']);
+    $result = mysqli_query($conn, "SELECT * FROM animes WHERE anime_name LIKE '%$search_query%'");
+
+    // Process the result and display the search results
+} else {
+    
+}
+?>
 
     <div class="container-fluid tm-container-content tm-mt-60">
         <div class="row mb-4">
@@ -24,7 +65,30 @@ include('nav_bar.php');
 
 
 <?php
+if (isset($_GET['search']) && $_GET['search']!="")
+ {
+    
+if (isset($_GET['page_no']) && $_GET['page_no']!="") {
+	$page_no = $_GET['page_no'];
+	} else {
+		$page_no = 1;
+        }
+	$total_records_per_page = 4;
+    $offset = ($page_no-1) * $total_records_per_page;
+	$previous_page = $page_no - 1;
+	$next_page = $page_no + 1;
+	$adjacents = "2"; 
+    $search_query = mysqli_real_escape_string($conn, $_GET['search']);
+    $result_count = mysqli_query($conn, "SELECT COUNT(*) As total_records FROM animes WHERE name LIKE '%$search_query%'");
+    $total_records = mysqli_fetch_array($result_count);
+	$total_records = $total_records['total_records'];
+    $total_no_of_pages = ceil($total_records / $total_records_per_page);
+    $search_query = mysqli_real_escape_string($conn, $_GET['search']);
+    $result = mysqli_query($conn, "SELECT * FROM animes WHERE name LIKE '%$search_query%'");
 
+
+}
+else{
 if (isset($_GET['theme']) && $_GET['theme']!=""&& $_GET['theme']!="all")
 {
     $catagory= "  WHERE theme='".$_GET['theme']."' OR gener='".$_GET['theme']."' ";
@@ -55,9 +119,7 @@ if (isset($_GET['page_no']) && $_GET['page_no']!="") {
     $result = mysqli_query($conn, "SELECT DISTINCT animes.*, genres.*, themes.* FROM animes LEFT JOIN genres ON animes.animecode = genres.animeid LEFT JOIN themes ON animes.animecode = themes.animeid " . $catagory ." GROUP BY animes.animecode"."LIMIT $offset, $total_records_per_page");
     $result = mysqli_query($conn, "SELECT DISTINCT animes.*, genres.*, themes.* FROM animes LEFT JOIN genres ON animes.animecode = genres.animeid LEFT JOIN themes ON animes.animecode = themes.animeid " . $catagory . " GROUP BY animes.animecode LIMIT $offset, $total_records_per_page");
 
-    // $result = mysqli_query($conn, "SELECT DISTINCT animes.*, genres.*, themes.* FROM FROM animes   LEFT JOIN genres ON animes.animecode = genres.animeid   LEFT JOIN themes ON animes.animecode = themes.animeid ".$catagory." GROUP BY animes.animecode"." LIMIT $offset, $total_records_per_page");
-
-    // $result = mysqli_query($conn, "SELECT DISTINCT animes.*, genres.*, themes.* FROM FROM animes   LEFT JOIN genres ON animes.animecode = genres.animeid   LEFT JOIN themes ON animes.animecode = themes.animeid ".$catagory." GROUP BY animes.animecode"." LIMIT $offset, $total_records_per_page");
+        }
     while($row = mysqli_fetch_array($result)){
 ?>
 
