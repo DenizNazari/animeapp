@@ -1,0 +1,35 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="css/dark-mode.css">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Include your CSS and other scripts here -->
+</head>
+<body>
+  <input type="checkbox" class="check" id="chkbx" name="check_one" checked/>
+  <label for="chkbx">
+    <div id="thumb">
+      <div></div>
+    </div>
+    <span class="day"></span>
+    <span class="night">
+      <span></span>
+    </span>
+  </label>
+  <p>A functional interpretation of this <a href="https://cdpn.io/tvegI">pen</a>
+    <br><span class="small">thanks <a href="http://josh-ruther4d.com">Josh Rutherford</a></span></p>
+
+  <script>
+    $("#chkbx").click(function(){
+      if($("input:checked")){
+        $('body').toggleClass('bk')
+      } 
+    })
+  </script>
+</body>
+</html>

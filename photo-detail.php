@@ -1,8 +1,25 @@
 <!DOCTYPE html>
 <?php
+$cookie_name = 'animeid';
+
+if (!isset($_GET['animeid'])) {
+    if (!isset($_COOKIE[$cookie_name])) {
+        echo "Cookie named '" . $cookie_name . "' is not set!";
+        $_animeid = "a1";
+    } else {
+        echo "Cookie '" . $cookie_name . "' is set!<br>";
+        $_animeid = $_COOKIE[$cookie_name];
+    }
+} else {
+    $cookie_value = $_GET['animeid'];
+    setcookie($cookie_name, $cookie_value, time() + (86400 * 30), "/"); // 86400 = 1 day
+    $_animeid = $cookie_value;
+}
+
+
 include('baglan.php');
 
-$sorgu_anime = mysqli_query($conn, "SELECT * FROM animes WHERE animecode='".$_GET['animeid']."'");
+$sorgu_anime = mysqli_query($conn, "SELECT * FROM animes WHERE animecode='".$_animeid."'");
 
 if (!$sorgu_anime) {
     die('Query failed: ' . mysqli_error($conn));
@@ -16,9 +33,18 @@ $satir_anime = mysqli_fetch_array($sorgu_anime);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ANIBASE <?php echo $satir_anime['name']?> </title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/star.css">
+
     <link rel="stylesheet" href="css/templatemo-style.css">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css" rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css" rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 
 <style>
@@ -42,15 +68,61 @@ p, .tm-text-gray{
     color:<?php echo $satir_anime['text_color']?> ;
 }
 </style>
+
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.rate {
+    float: left;
+    height: 80px; /* Adjust height to accommodate larger stars */
+    padding: 0 5px;
+}
+
+.rate:not(:checked) > input {
+    position: absolute;
+    top: -9999px;
+}
+
+.rate:not(:checked) > label {
+    float: right;
+    width: 1em;
+    overflow: hidden;
+    white-space: nowrap;
+    cursor: pointer;
+    font-size: 50px; /* Increase font size for larger stars */
+    color: #ccc;
+}
+
+.rate:not(:checked) > label:before {
+    content: '★    ';
+}
+
+.rate > input:checked ~ label {
+    color: #ffc700;
+}
+
+.rate:not(:checked) > label:hover,
+.rate:not(:checked) > label:hover ~ label {
+    color: #deb217;
+}
+
+.rate > input:checked + label:hover,
+.rate > input:checked + label:hover ~ label,
+.rate > input:checked ~ label:hover,
+.rate > input:checked ~ label:hover ~ label,
+.rate > label:hover ~ input:checked ~ label {
+    color: #c59b08;
+}
+</style>
+
+
+
 </head>
 <body style="background-color:<?php echo $satir_anime['page_color_1']?>;">
-    <div id="loader-wrapper">
-        <div id="loader"></div>
-
-        <div class="loader-section section-left"></div>
-        <div class="loader-section section-right"></div>
-
-    </div>
     <?php
 
 include('nav_bar.php');
@@ -58,52 +130,61 @@ include('nav_bar.php');
     <div class="tm-hero d-flex justify-content-center align-items-center" data-parallax="scroll" data-image-src="sitepng\banner_<?php echo $satir_anime['imgnames']?>.jpg">
 
 
-
-        <form class="d-flex tm-search-form">
-            <input class="form-control tm-search-input" type="search" placeholder="Search" aria-label="Search">
-            <button style="background-color:<?php echo $satir_anime['page_color_2']?>;" class="btn btn-outline-success tm-search-btn" type="submit">
-                <i class="fas fa-search"></i>
-            </button>
+            <form class="d-flex tm-search-form" method="GET" action="index.php">
         </form>
     </div>
 
     <div class="container-fluid tm-container-content tm-mt-60">
         <div class="row mb-4">
             <h2 class="col-12 tm-text-primary"><?php echo $satir_anime['name']?></h2>
+                                 <div class="ui labeled button mt-5 ml-5" tabindex="0">
+                                <div class="ui pink button">
+                                    <i class="fas fa-thumbs-up"></i>
+                                </div>
+                                <span class="ui basic pink label">0</span>
+                                </div>
         </div>
         <div   class="row tm-mb-90">            
             <div  class="col-xl-4 col-lg-7 col-md-6 col-sm-12 ">
                 <div style="background-color:<?php echo $satir_anime['page_color_2']?>;" class="tm-bg-gray tm-video-details">
                     <img src="sitepng\site_<?php echo $satir_anime['imgnames']?>.jpg" alt="Image" class="img-fluid">
+
                     <div style="margin-top: 50px;">
-                        <h3 class="tm-text-gray-dark mb-3">Themes</h3>
+                        <h3 class="tm-text-gray-dark mb-3">Genre</h3>    
+                        <div class="row col-xl-8 col-lg-10 col-md-6 col-sm-12">
+                        <span class="tm-text-gray-dark">Japanese:</span><span class="tm-text-primary"><?php echo $satir_anime['Synonyms']?></span>
+                                    <div class="rate">
+                                        <input type="radio" id="star5" name="rate" value="5" />
+                                        <label for="star5" title="text">5 stars</label>
+                                        <input type="radio" id="star4" name="rate" value="4" />
+                                        <label for="star4" title="text">4 stars</label>
+                                        <input type="radio" id="star3" name="rate" value="3" />
+                                        <label for="star3" title="text">3 stars</label>
+                                        <input type="radio" id="star2" name="rate" value="2" />
+                                        <label for="star2" title="text">2 stars</label>
+                                        <input type="radio" id="star1" name="rate" value="1" />
+                                        <label for="star1" title="text">1 star</label>
+                                    </div>
+                        </div>
+                        <div class="row col-xl-8 col-lg-10 col-md-6 col-sm-12">
+                        <span class="tm-text-gray-dark">Japanese:</span><span class="tm-text-primary"><?php echo $satir_anime['Synonyms']?></span>
 
-
-
-
-
-                        <?php
-                            $sorgu_anime = mysqli_query($conn,"select * from themes where animeid='".$_GET['animeid']."'");
-                            $say_anime = mysqli_num_rows($sorgu_anime);
-                            if ( $say_anime > 0 ) {
-                                    while ( $while_anime = mysqli_fetch_array($sorgu_anime) ) {
-                            ?>
-                                <a href="index.php?theme=<?php echo  $while_anime['theme']?>" class="tm-text-primary mr-4 mb-2 d-inline-block"><?php echo  $while_anime['theme']?></a>
-                                
-                        <?php }}?>
-
+                                    <div class="rate">
+                                        <input type="radio" id="star5" name="rate" value="5" />
+                                        <label for="star5" title="text">5 stars</label>
+                                        <input type="radio" id="star4" name="rate" value="4" />
+                                        <label for="star4" title="text">4 stars</label>
+                                        <input type="radio" id="star3" name="rate" value="3" />
+                                        <label for="star3" title="text">3 stars</label>
+                                        <input type="radio" id="star2" name="rate" value="2" />
+                                        <label for="star2" title="text">2 stars</label>
+                                        <input type="radio" id="star1" name="rate" value="1" />
+                                        <label for="star1" title="text">1 star</label>
+                                    </div>
+                        </div>
+                                                                    
                     </div>
-                    <div style="margin-top: 50px;">
-                        <h3 class="tm-text-gray-dark mb-3">Genre</h3>
-                        <?php
-                            $sorgu_anime = mysqli_query($conn,"select * from genres where animeid='".$_GET['animeid']."'");
-                            $say_anime = mysqli_num_rows($sorgu_anime);
-                            if ( $say_anime > 0 ) {
-                                    while ( $while_anime = mysqli_fetch_array($sorgu_anime) ) {
-                            ?>
-                                <a href="index.php?theme=<?php echo  $while_anime['gener']?>" class="tm-text-primary mr-4 mb-2 d-inline-block"><?php echo  $while_anime['gener']?></a>                    
-                        <?php }}?>
-                    </div>
+ 
                     
                 </div>
             </div>
@@ -117,19 +198,6 @@ include('nav_bar.php');
 
 
                     </p>
-                    <div class="mb-4">
-                        <h3 class="tm-text-gray-dark mb-3">Background</h3>
-                        <p>
-                            
-                        
-    
-                        
-                        <?php echo  $satir_anime['Background']?>
-                    
-                    
-                    
-                    </p>
-                    </div>
                     <div>
                         <h3 class="tm-text-gray-dark mb-3">details</h3>
                         <div class="mr-4 mb-2">
@@ -165,12 +233,35 @@ include('nav_bar.php');
                         <div class="mr-4 mb-2">
                             <span class="tm-text-gray-dark">Studios:</span><span class="tm-text-primary"><?php echo $satir_anime['Studios']?></span>
                         </div>
-                        <!-- <div class="mr-4 mb-2">
-                            <span class="tm-text-gray-dark">Duration:</span><span class="tm-text-primary"><?php echo $satir_anime['text_color']?></span>
-                        </div> -->
-                        <!-- <div class="mr-4 mb-2">
-                            <span class="tm-text-gray-dark">Rating:</span><span class="tm-text-primary"><?php echo $satir_anime['text_color']?></span>
-                        </div> -->
+                        <div style="margin-top: 50px;">
+                        <h3 class="tm-text-gray-dark mb-3">Themes</h3>
+
+
+
+
+
+                        <?php
+                            $sorgu_anime = mysqli_query($conn,"select * from themes where animeid='".$_animeid."'");
+                            $say_anime = mysqli_num_rows($sorgu_anime);
+                            if ( $say_anime > 0 ) {
+                                    while ( $while_anime = mysqli_fetch_array($sorgu_anime) ) {
+                            ?>
+                                <a href="index.php?theme=<?php echo  $while_anime['theme']?>" class="tm-text-primary mr-4 mb-2 d-inline-block"><?php echo  $while_anime['theme']?></a>
+                                
+                        <?php }}?>
+
+                    </div>
+
+                    <div style="margin-top: 50px;">
+                        <h3 class="tm-text-gray-dark mb-3">Genre</h3>                  <?php
+                            $sorgu_anime = mysqli_query($conn,"select * from genres where animeid='".$_animeid."'");
+                            $say_anime = mysqli_num_rows($sorgu_anime);
+                            if ( $say_anime > 0 ) {
+                                    while ( $while_anime = mysqli_fetch_array($sorgu_anime) ) {
+                            ?>
+                                <a href="index.php?theme=<?php echo  $while_anime['gener']?>" class="tm-text-primary mr-4 mb-2 d-inline-block"><?php echo  $while_anime['gener']?></a>                    
+                        <?php }}?>
+                    </div>
 
                     </div>
              
@@ -180,21 +271,12 @@ include('nav_bar.php');
                 <div style="background-color:<?php echo $satir_anime['page_color_2']?>;" class="tm-bg-gray tm-video-details">
                     <iframe width="100%" height="345" src="https://www.youtube.com/embed/<?php echo  $satir_anime['youtubelink']?>">
                     </iframe>
-                    <!-- <iframe width="100%" height="345" src="https://www.youtube.com/embed/rZ95aZmQu_8?si=58PezuK53960h8MV">
-                    </iframe> -->
                     <div class="mb-4">
-                        <h3 class="tm-text-gray-dark mb-3">License</h3>
-                        <p>Free for both personal and commercial use. No need to pay anything. No need to make any attribution.</p>
+                        <h3 class="tm-text-gray-dark mb-3">Background</h3>
+                            <p>
+                                <?php echo  $satir_anime['Background']?>
+                            </p>
                     </div>
-
-
-
-
-
-
-
-
-
 
 
 
@@ -205,59 +287,99 @@ include('nav_bar.php');
 
 
                     <div class="container justify-content-center mt-9 border-left border-right">
-                        <div class="d-flex justify-content-center pt-3 pb-2"> <input type="text" name="text" placeholder="+ Add a note" class="form-control addtxt"> </div>
-                        <div class="d-flex justify-content-center py-2">
-                            <div class="second py-2 px-2"> <span class="text1">Type your note, and hit enter to add it</span>
-                                <div class="d-flex justify-content-between py-1 pt-2">
-                                    <div><img src="https://i.imgur.com/AgAC1Is.jpg" width="18"><span class="text2">Martha</span></div>
-                                    <div><span class="text3">Upvote?</span><span class="thumbup"><i class="fa fa-thumbs-o-up"></i></span><span class="text4">3</span></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-center py-2">
-                            <div class="second py-2 px-2"> <span class="text1">Type your note, and hit enter to add it</span>
-                                <div class="d-flex justify-content-between py-1 pt-2">
-                                    <div><img src="https://i.imgur.com/tPvlEdq.jpg" width="18"><span class="text2">Curtis</span></div>
-                                    <div><span class="text3">Upvote?</span><span class="thumbup"><i class="fa fa-thumbs-o-up"></i></span><span class="text4">3</span></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-center py-2">
-                            <div class="second py-2 px-2"> <span class="text1">Type your note, and hit enter to add it</span>
-                                <div class="d-flex justify-content-between py-1 pt-2">
-                                    <div><img src="https://i.imgur.com/gishFbz.png" width="18" height="18"><span class="text2">Beth</span></div>
-                                    <div><span class="text3 text3o">Upvoted</span><span class="thumbup"><i class="fa fa-thumbs-up thumbupo"></i></span><span class="text4 text4i">1</span></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-center py-2">
-                            <div class="second py-2 px-2"> <span class="text1">Type your note, and hit enter to add it</span>
-                                <div class="d-flex justify-content-between py-1 pt-2">
-                                    <div><img src="https://i.imgur.com/gishFbz.png" width="18" height="18"><span class="text2">Beth</span></div>
-                                    <div><span class="text3 text3o">Upvoted</span><span class="thumbup"><i class="fa fa-thumbs-up thumbupo"></i></span><span class="text4 text4i">1</span></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-center py-2">
-                            <div class="second py-2 px-2"> <span class="text1">Type your note, and hit enter to add it</span>
-                                <div class="d-flex justify-content-between py-1 pt-2">
-                                    <div><img src="https://i.imgur.com/gishFbz.png" width="18" height="18"><span class="text2">Beth</span></div>
-                                    <div><span class="text3 text3o">Upvoted</span><span class="thumbup"><i class="fa fa-thumbs-up thumbupo"></i></span><span class="text4 text4i">1</span></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-center py-2 pb-3">
-                            <div class="second py-2 px-2"> <span class="text1">Type your note, and hit enter to add it</span>
-                                <div class="d-flex justify-content-between py-1 pt-2">
-                                    <div><img src="https://i.imgur.com/tPvlEdq.jpg" width="18"><span class="text2">Curtis</span></div>
-                                    <div><span class="text3">Upvote?</span><span class="thumbup"><i class="fa fa-thumbs-o-up"></i></span><span class="text4 text4o">1</span></div>
-                                </div>
-                            </div>
-                        </div>
+    <div class="d-flex justify-content-center pt-3 pb-2">
+
+
+    <?php
+if(isset($_SESSION['user_name'])) 
+{
+    echo '<input type="text" name="text"   placeholder="+ Add a message" class="form-control addtxt" id="commentInput"> ';
+
+} else {
+    echo '<input type="text" name="text" readonly  placeholder="First login" class="form-control addtxt" id="commentInput">';
+
+}
+?>
+
+    </div>
+
+    <div style="height:400px;overflow:auto;color:white;scrollbar-base-color:gold;font-family:sans-serif;padding:10px;" id="commentsContainer">
+    <?php
+    $sorgu_msj = mysqli_query($conn, "SELECT * FROM mesages WHERE animecode='" . $_animeid . "'");
+    if ($sorgu_msj) {
+        while ($while_msj = mysqli_fetch_array($sorgu_msj)) {
+            $sorgu_user = mysqli_query($conn, "SELECT username FROM user WHERE usercode='" . $while_msj['userid'] . "'");
+            if ($sorgu_user) {
+                $say_user = mysqli_fetch_array($sorgu_user);
+            } else {
+                $say_user = array('username' => 'Unknown'); // Provide a default value if user not found
+            }
+    ?>
+            <div class="d-flex justify-content-center py-2">
+                <div class="second py-2 px-2">
+                    <span class="text1"><?php echo $while_msj["text"] ?></span>
+                    <div class="d-flex justify-content-between py-1 pt-2">
+                        <div><img  src="profilpngs/<?php echo $_SESSION['user_png']?>" width="18"><span class="text2"><?php echo $say_user['username'] ?></span></div>
                     </div>
+                </div>
+            </div>
+    <?php
+        }
+    }
+    ?>
+</div>
 
 
 
+    </div>
+
+</div>
+
+<script>
+
+$('.button').click(function() {
+    $('.label').html(function(i, val) { 
+      return (val*1) + 0.5;
+    });
+});
+
+
+
+    function postComment() {
+        var commentInput = document.getElementById("commentInput");
+        var comment = commentInput.value.trim();
+        var animeid = "<?php echo $_GET['animeid']; ?>"; 
+        if (comment !== "") {
+            <?php
+                
+                ?>
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("POST", "submit_comment.php", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+            xhttp.onreadystatechange = function () {
+                if (xhttp.readyState === 4 && xhttp.status === 200) {
+                    console.log(xhttp.responseText);
+
+                    var commentsContainer = document.getElementById("commentsContainer");
+                    var newCommentDiv = document.createElement("div");
+                    newCommentDiv.innerHTML = xhttp.responseText;
+                    commentsContainer.appendChild(newCommentDiv);
+
+                    commentInput.value = "";
+                }
+            };
+            var params = "comment=" + encodeURIComponent(comment) + "&animeid=" + encodeURIComponent(animeid);
+            xhttp.send(params);
+        }
+    }
+
+    document.getElementById("commentInput").addEventListener("keyup", function (event) {
+        if (event.key === "Enter") {
+            postComment();
+        }
+    });
+</script>
 
 
 
@@ -289,7 +411,7 @@ include('nav_bar.php');
 
               
               <?php
-                            $sorgu_anime = mysqli_query($conn,"select * from `character` where animecode='".$_GET['animeid']."'");
+                            $sorgu_anime = mysqli_query($conn,"select * from `character` where animecode='".$_animeid."'");
                             $say_anime = mysqli_num_rows($sorgu_anime);
                             if ( $say_anime > 0 ) {
                                     while ( $while_aime = mysqli_fetch_array($sorgu_anime) ) {
@@ -309,22 +431,6 @@ include('nav_bar.php');
 
                   <div class="more-info">
                         <h1><?php echo  $while_aime['charactername']?></h1>
-                        <!-- <div class="coords">
-                            <span>Voice Actor:</span>
-                            <span>Koga, Aoi</span>
-                            </div>
-                        <div class="coords">
-                        <span>Birthday:</span>
-                        <span>January 1</span>
-                        </div>
-                        <div class="coords">
-                        <span>Blood Type:</span>
-                        <span> AB</span>
-                        </div> 
-                        <div class="coords">
-                            <span>Height:</span>
-                            <span>158 cm</span>
-                            </div>  -->
                             <p><?php echo  $while_aime['details']?></p>
 
                     </div>
@@ -345,47 +451,13 @@ include('nav_bar.php');
               </div>
 
             
-        </div> <!-- row -->
-    </div> <!-- container-fluid, tm-container-content -->
+        </div> 
+    </div> 
+    <?php
+include('footer.php');
 
-    <footer class="tm-bg-gray pt-5 pb-3 tm-text-gray tm-footer">
-        <div class="container-fluid tm-container-small">
-            <div class="row">
-                <div class="col-lg-6 col-md-12 col-12 px-5 mb-5">
-                    <h3 class="tm-text-primary mb-4 tm-footer-title">About Catalog-Z</h3>
-                    <p>Integer ipsum odio, pharetra ac massa ac, pretium facilisis nibh. Donec lobortis consectetur molestie. Nullam nec diam dolor. Fusce quis viverra nunc, sit amet varius sapien.</p>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6 col-12 px-5 mb-5">
-                    <h3 class="tm-text-primary mb-4 tm-footer-title">Our Links</h3>
-                    <ul class="tm-footer-links pl-0">
-                        <li><a href="#">Advertise</a></li>
-                        <li><a href="#">Support</a></li>
-                        <li><a href="#">Our Company</a></li>
-                        <li><a href="#">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6 col-12 px-5 mb-5">
-                    <ul class="tm-social-links d-flex justify-content-end pl-0 mb-5">
-                        <li class="mb-2"><a href="https://facebook.com"><i class="fab fa-facebook"></i></a></li>
-                        <li class="mb-2"><a href="https://twitter.com"><i class="fab fa-twitter"></i></a></li>
-                        <li class="mb-2"><a href="https://instagram.com"><i class="fab fa-instagram"></i></a></li>
-                        <li class="mb-2"><a href="https://pinterest.com"><i class="fab fa-pinterest"></i></a></li>
-                    </ul>
-                    <a href="#" class="tm-text-gray text-right d-block mb-2">Terms of Use</a>
-                    <a href="#" class="tm-text-gray text-right d-block">Privacy Policy</a>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-8 col-md-7 col-12 px-5 mb-3">
-                    Copyright 2020 Catalog-Z Company. All rights reserved.
-                </div>
-                <div class="col-lg-4 col-md-5 col-12 px-5 text-right">
-                    Designed by <a href="https://templatemo.com" class="tm-text-gray" rel="sponsored" target="_parent">TemplateMo</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-    
+?>
+   
     <script src="js/plugins.js"></script>
     <script>
         $(window).on("load", function() {

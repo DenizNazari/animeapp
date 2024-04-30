@@ -7,13 +7,7 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="fontawesome/css/all.min.css">
     <link rel="stylesheet" href="css/templatemo-style.css">
-<!--
-    
-TemplateMo 556 Catalog-Z
 
-https://templatemo.com/tm-556-catalog-z
-
--->
 </head>
 <body>
     <!-- Page Loader -->
@@ -114,7 +108,6 @@ https://templatemo.com/tm-556-catalog-z
             </div>
             <div class="col-lg-4 col-12">
                 <h2 class="tm-text-primary mb-5">Our Location</h2>
-                <!-- Map -->
                 <div class="mapouter mb-4">
                     <div class="gmap-canvas">
                         <iframe width="100%" height="520" id="gmap-canvas"
