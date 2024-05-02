@@ -43,7 +43,7 @@
 
 					<li class="sidebar-item">
 						<a class="sidebar-link" href="admin_USER_PAGE.PHP">
-						<i class="align-middle me-2 fas fa-fw fa-list"></i> <span class="align-middle">USER PAGE</span>
+						<i class="align-middle me-2 fas fa-fw fa-list"></i> <span class="align-middle">USER PROFILE PICTURE</span>
 						</a>
 					</li>
 

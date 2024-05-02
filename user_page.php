@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<?php 
+<?php
+
+use LDAP\Result;
+
 include('baglan.php');
 ?>
 
@@ -193,7 +196,7 @@ include('nav_bar.php');
                     <div class="mt-3">
                       <h4><?php echo $_SESSION["user_name"]?></h4>
 
-                      <button  class="btn btn-primary" id="myBtn">choose profile picture</button>
+                      <button  class="btn btn-secondary" id="myBtn">choose profile picture</button>
 
        
 
@@ -276,9 +279,10 @@ include('nav_bar.php');
                   <hr>
                   <div class="row">
                     <div class="col-sm-12">
-                      <a class="btn btn-info " target="__blank" href="">add anime</a>
-                      <a class="btn btn-info " target="__blank" href="">add character</a>
-                      <a class="btn green btn-info " target="__blank" href="">change profile</a>
+                      <a class="btn btn-outline-secondary" target="__blank" href="add_anime.php">add anime</a>
+                      <a class="btn btn-outline-secondary" target="__blank" href="_added_animes.php">added anime</a>
+                      
+                      <a class="btn btn-outline-secondary" target="__blank" href="_request_animes.php">reguest anime</a>
 
                     </div>
 
@@ -385,6 +389,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     dropdownWidth: '400px',
     'object-fit': 'contain',
     placeholder: 'Select a photo',
+    data: [ 
+      <?php $result=mysqli_query($conn,"SELECT * FROM  `image` ");
+      $result_count=mysqli_query($conn,"SELECT count(*)  FROM  `image` ");
+    while ($row = mysqli_fetch_assoc($result)) {
+      
+      echo "      {
+        value:'". $row['png_name']." ',
+        img: 'profilpngs/". $row['png_name']."',
+        imgWidth: '100px',
+        imgHeight: '100%',
+        
+      }";     
+      if($row['id']!=$result_count) echo ",";
+      
+     } ?>
+    ],
+  });
+</script>
+
+
+<!-- 
+<script>
+  new DynamicSelect('#photo', {
+    columns: 3,
+    height: '100px',
+    width: '100%',
+    dropdownWidth: '400px',
+    'object-fit': 'contain',
+    placeholder: 'Select a photo',
     data: [
       {
         value: 'p_1.jpg',
@@ -424,7 +457,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
     ],
   });
-</script>
+</script> -->
 
 
 

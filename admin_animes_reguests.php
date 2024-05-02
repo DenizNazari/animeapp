@@ -15,6 +15,7 @@ include('baglan.php');
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+	
 
 
 
@@ -35,8 +36,6 @@ include('baglan.php');
 <body>
 
 
-
-
 <div class="splash active">
 		<div class="splash-icon"></div>
 	</div>
@@ -45,59 +44,6 @@ include('baglan.php');
 
           <?php include("admin_sidebar.php") ?>
 
-								<!-- <nav id="sidebar" class="sidebar">
-										<a class="sidebar-brand" href="index.php">
-											<svg>
-												<use xlink:href="#ion-ios-pulse-strong"></use>
-											</svg>
-											ANIBASE
-										</a>
-										<div class="sidebar-content">
-											<div class="sidebar-user">
-
-												<div class="fw-bold"><?php echo $_SESSION["user_name"]?></div>
-
-											</div>
-
-											<ul class="sidebar-nav">
-												<li class="sidebar-header">
-													Main
-												</li>
-												<li class="sidebar-item">
-													<a class="sidebar-link" href="admin_panel.php">
-														<i class="align-middle me-2 fas fa-fw fa-list"></i> <span class="align-middle">DATA</span>
-													</a>
-												</li>
-
-												<li class="sidebar-item">
-													<a class="sidebar-link" href="admin_USER_PAGE.php">
-														<i class="align-middle me-2 fas fa-fw fa-list"></i> <span class="align-middle">ANIMES REGUESTS</span>
-													</a>
-												</li>
-												<li class="sidebar-item">
-													<a class="sidebar-link" href="admin_USER_PAGE.php">
-														<i class="align-middle me-2 fas fa-fw fa-list"></i> <span class="align-middle">ANIMES</span>
-													</a>
-												</li>
-
-												<li class="sidebar-item">
-													<a class="sidebar-link" href="admin_USER_PAGE.php">
-														<i class="align-middle me-2 fas fa-fw fa-list"></i> <span class="align-middle">CHARACTERS</span>
-													</a>
-												</li>
-
-
-												<li class="sidebar-item">
-													<a class="sidebar-link" href="admin_USER_PAGE.PHP">
-													<i class="align-middle me-2 fas fa-fw fa-list"></i> <span class="align-middle">USER PAGE</span>
-													</a>
-												</li>
-
-
-
-											</ul>
-										</div>
-							</nav> -->
 		<div class="main">
 			<nav class="navbar navbar-expand navbar-theme">
 				<a class="sidebar-toggle d-flex me-2">
@@ -138,40 +84,169 @@ include('baglan.php');
 						
 					</div>
 
+
+
+					<script>
+							function showUser(str) {
+							if (str == "") {
+								document.getElementById("txtHint").innerHTML = "";
+								return;
+							} else {
+								var xmlhttp = new XMLHttpRequest();
+								xmlhttp.onreadystatechange = function() {
+								if (this.readyState == 4 && this.status == 200) {
+									document.getElementById("txtHint").innerHTML = this.responseText;
+								}
+								};
+								xmlhttp.open("GET","admin_serch_place.php?q="+str,true);
+								xmlhttp.send();
+							}
+							}
+							</script>
+
+
+
+
+
 					<div class="row">
 						<div class="col-12">
 							<div class="card">
 								<div class="card-header">
 									<h5 class="card-title mb-0">
 
-
-																<div class="btn-group">
-																		<button type="button" class="btn mb-1 btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true"
-																			aria-expanded="false">
-																			Primary
-																		</button>
-																		<div class="dropdown-menu">
-																			<a class="dropdown-item" href="#">Action</a>
-																			<a class="dropdown-item" href="#">Another action</a>
-																			<a class="dropdown-item" href="#">Something else here</a>
-																			<div class="dropdown-divider"></div>
-																			<a class="dropdown-item" href="#">Separated link</a>
-																		</div>
-																</div>
+							<form>
+									<select name="users"  onchange="showUser(this.value)">
+										<option   value="1">ALL</option>
+										<option  value="2"> REGUESTS</option>
+										<option  value="3">ADDED</option>
+									</select>
+							</form>
 
 
+							<div class="container physicianList">
+									<input type='hidden' id='current_page' />
+									<input type='hidden' id='show_per_page' />
+								<div class="row "  id="txtHint">
+													<?php $_GET["q"]=1; include("admin_serch_place.php") ?>
 
+								</div>
+							</div>
+                        <div class="row tm-mb-90">
+								<div role="group" aria-label="Third group" id="page_navigation" class="btn-group col-12 d-flex justify-content-between align-items-center tm-paging-col"> </div>
+				    	</div>  
+
+
+
+
+
+
+
+
+
+								<script>
+
+var target = document.querySelector('#txtHint');
+
+// Options for the observer (which mutations to observe)
+var config = { childList: true };
+
+// Callback function to execute when mutations are observed
+var callback = function(mutationsList, observer) {
+    for(var mutation of mutationsList) {
+        if (mutation.type === 'childList') {
+            // Content has changed, call the function
+            go_to_page(0);
+        }
+    }
+};
+
+// Create an observer instance linked to the callback function
+var observer = new MutationObserver(callback);
+
+// Start observing the target node for configured mutations
+observer.observe(target, config);
+
+
+													jQuery(document).ready(function () {
+
+													//Pagination JS
+													//how much items per page to show
+													var show_per_page = 4; 
+													//getting the amount of elements inside pagingBox div
+													var number_of_items = $('#txtHint').children().length;
+													//calculate the number of pages we are going to have
+													var number_of_pages = Math.ceil(number_of_items/show_per_page);
+
+													//set the value of our hidden input fields
+													$('#current_page').val(0);
+													$('#show_per_page').val(show_per_page);
+
+	
+													var navigation_html = '<div class="btn-group" role="group" > <a class="btn btn-secondary previous_link   btn-sm tm-btn-prev mb-2 " href="javascript:previous();">Prev</a></div><div class="tm-paging d-flex">';
+													var current_link = 0;
+													while(number_of_pages > current_link){
+														navigation_html += '<a class="btn btn-secondary page_link active tm-paging-link" href="javascript:go_to_page(' + current_link +')" longdesc="' + current_link +'">'+ (current_link + 1) +'</a>';
+														current_link++;
+													}
+													navigation_html += '  </div><div class="btn-group" role="group" ><a class="next_link btn-secondary btn  btn-sm tm-btn-next" href="javascript:next();">Next</a></div>';
+
+													$('#page_navigation').html(navigation_html);
+
+													//add active_page class to the first page link
+													$('#page_navigation .page_link:first').addClass('active_page');
+
+													//hide all the elements inside pagingBox div
+													$('#txtHint').children().css('display', 'none');
+
+													//and show the first n (show_per_page) elements
+													$('#txtHint').children().slice(0, show_per_page).css('display', 'block');
+
+													});
+
+													
+
+													function previous(){
+
+													new_page = parseInt($('#current_page').val()) - 1;
+													//if there is an item before the current active link run the function
+													if($('.active_page').prev('.page_link').length==true){
+													go_to_page(new_page);
+													}
+
+													}
+
+													function next(){
+													new_page = parseInt($('#current_page').val()) + 1;
+													//if there is an item after the current active link run the function
+													if($('.active_page').next('.page_link').length==true){
+													go_to_page(new_page);
+													}
+
+													}
+													function go_to_page(page_num){
+													//get the number of items shown per page
+													var show_per_page = parseInt($('#show_per_page').val());
+
+													//get the element number where to start the slice from
+													start_from = page_num * show_per_page;
+
+													//get the element number where to end the slice
+													end_on = start_from + show_per_page;
+
+													$('#txtHint').children().css('display', 'none').slice(start_from, end_on).css('display', 'block');
+
+													$('.page_link[longdesc=' + page_num +']').addClass('active_page').siblings('.active_page').removeClass('active_page');
+
+													//update the current page input field
+													$('#current_page').val(page_num);
+													}
+								</script> 
 
 
 
 									</h5>
 								</div>
-								<div class="card-body">
-									<div class="my-5">
 
-									<?php include("admin_serch_place.php") ?>
-									</div>
-								</div>
 							</div>
 						</div>
 					</div>

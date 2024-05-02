@@ -45,6 +45,7 @@ $satir_anime = mysqli_fetch_array($sorgu_anime);
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://use.fontawesome.com/fe459689b4.js"></script>
 
 
 <style>
@@ -117,6 +118,52 @@ p, .tm-text-gray{
 .rate > label:hover ~ input:checked ~ label {
     color: #c59b08;
 }
+
+
+
+.bookmark-btn {
+    height: 50px;
+    width: 150px;
+    display: inline-flex;
+    justify-content: center;
+    padding: 10px 15px;
+    column-gap: 5px;
+    color: #3a3d52;
+    background-color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color .25s;
+    align-items: center;
+    box-shadow:0 0 5px rgb(0,0,.25s);
+    border: 2px solid #eee;
+    font-size: 17px;
+}
+
+.bookmark-btn:hover {
+    background-color: #e6e6e6;
+}
+
+.bookmark-btn:focus .fa {
+    animation: ribbon .25s cubic-bezier(.77 , 0 , 0.17, 1) forwards;
+}
+
+@keyframes ribbon {
+    0% {
+        transform: scaleY(.1);
+    }
+    25% {
+        transform: scaleY(.1);
+    }
+    100% {
+        color: #ed3f40;
+    }
+}
+
+
+
+
+
+
 </style>
 
 
@@ -137,13 +184,80 @@ include('nav_bar.php');
     <div class="container-fluid tm-container-content tm-mt-60">
         <div class="row mb-4">
             <h2 class="col-12 tm-text-primary"><?php echo $satir_anime['name']?></h2>
-                                 <div class="ui labeled button mt-5 ml-5" tabindex="0">
-                                <div class="ui pink button">
-                                    <i class="fas fa-thumbs-up"></i>
-                                </div>
-                                <span class="ui basic pink label">0</span>
-                                </div>
+
+
+
+            <?php
+    if(isset($_SESSION['user_name'])){
+        $user_id = $_SESSION['id'];
+        $bookmark_count_query = mysqli_query($conn, "SELECT COUNT(*) FROM likes WHERE animes_id='".$satir_anime['id']."' AND rate=1");
+        if($bookmark_count_query) {
+            $bookmark_count_result = mysqli_fetch_all($bookmark_count_query);
+            $bookmark_count = $bookmark_count_result[0][0];
+        } else {
+            $bookmark_count = 0; // or handle the error in some other way
+        }
+        
+        $status_query = mysqli_query($conn, "SELECT rate FROM likes WHERE animes_id='".$satir_anime['id']."' AND user_id=$user_id");
+        if($status_query) {
+            $status_result = mysqli_fetch_all($status_query);
+            $status = $status_result[0][0];
+        } else {
+            $status = null; // or handle the error in some other way
+        }
+    }
+    else{
+        $user_id=0;
+    }
+         ?> 
+
+<form method="post"> 
+    <button type="submit" name="button1" value="Button1" class="bookmark-btn <?php if($user_id==0){echo "disabled";}?> <?php if(isset($status) && $status==1){echo "active";} else {echo "inactive";}?>" data-id="<?php echo $satir_anime['id']; ?>">
+        <i class="fa fa-bookmark"></i>
+        <span data-count="<?php echo $bookmark_count?>"><?php echo $bookmark_count?></span>
+    </button>
+</form>
+
+
+
         </div>
+
+        <script type="text/javascript">
+    $(document).ready(function(){
+        $('.bookmark-btn').click(function(e){
+            e.preventDefault();
+            var post_id = $(this).data('id');
+            var status = $(this).hasClass('active') ? 0 : 1;
+
+            $.ajax({
+                type: "POST",
+                url: "bookmark.php",
+                data: {
+                    post_id: post_id,
+                    user_id: <?php echo $user_id; ?>,
+                    status: status
+                },
+                success: function(response) {
+                    var data = JSON.parse(response);
+                    if(data.success) {
+                        if(status == 1) {
+                            $('.bookmark-btn[data-id="' + post_id + '"]').addClass('active').removeClass('inactive');
+                            var count = parseInt($('.bookmark-btn[data-id="' + post_id + '"] span').data('count')) + 1;
+                            $('.bookmark-btn[data-id="' + post_id + '"] span').html(count).data('count', count);
+                        } else {
+                            $('.bookmark-btn[data-id="' + post_id + '"]').removeClass('active').addClass('inactive');
+                            var count = parseInt($('.bookmark-btn[data-id="' + post_id + '"] span').data('count')) - 1;
+                            $('.bookmark-btn[data-id="' + post_id + '"] span').html(count).data('count', count);
+                        }
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+
+
         <div   class="row tm-mb-90">            
             <div  class="col-xl-4 col-lg-7 col-md-6 col-sm-12 ">
                 <div style="background-color:<?php echo $satir_anime['page_color_2']?>;" class="tm-bg-gray tm-video-details">
