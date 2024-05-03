@@ -2,13 +2,6 @@
 <?php
 
 include('baglan.php');
-if (isset($_GET['query'])) {
-    $search_query = mysqli_real_escape_string($conn, $_GET['search']);
-    $result = mysqli_query($conn, "SELECT * FROM animes WHERE anime_name LIKE '%$search_query%'");
-
-} else {
-    
-}
 
 ?>
 
@@ -19,65 +12,44 @@ if (isset($_GET['query'])) {
 
 
         <div class="row" id="pagingBox">
-
         <?php
-if (isset($_GET['search']) && $_GET['search']!="")
- {
-    
-if (isset($_GET['page_no']) && $_GET['page_no']!="") {
-	$page_no = $_GET['page_no'];
-	} else {
-		$page_no = 1;
-        }
-	$total_records_per_page = 20;
-    $offset = ($page_no-1) * $total_records_per_page;
-	$previous_page = $page_no - 1;
-	$next_page = $page_no + 1;
-	$adjacents = "2"; 
-    $search_query = mysqli_real_escape_string($conn, $_GET['search']);
-    $result_count = mysqli_query($conn, "SELECT COUNT(*) As total_records FROM animes WHERE name LIKE '%$search_query%'");
-    $total_records = mysqli_fetch_array($result_count);
-	$total_records = $total_records['total_records'];
-    $total_no_of_pages = ceil($total_records / $total_records_per_page);
-    $search_query = mysqli_real_escape_string($conn, $_GET['search']);
-    $result = mysqli_query($conn, "SELECT * FROM animes WHERE name LIKE '%$search_query%'");
-
-
-}
-else{
-if (isset($_GET['theme']) && $_GET['theme']!=""&& $_GET['theme']!="all")
-{
-    $catagory= "  WHERE theme='".$_GET['theme']."' OR gener='".$_GET['theme']."' ";
-}
-else{
-$catagory=" ";
-    }
-       
 
 if (isset($_GET['page_no']) && $_GET['page_no']!="") {
-	$page_no = $_GET['page_no'];
-	} else {
-		$page_no = 1;
-        }
-	$total_records_per_page = 20;
-    $offset = ($page_no-1) * $total_records_per_page;
-	$previous_page = $page_no - 1;
-	$next_page = $page_no + 1;
-	$adjacents = "2"; 
+    $page_no = $_GET['page_no'];
+} else {
+    $page_no = 1;
+}
+$total_records_per_page = 20;
+$offset = ($page_no-1) * $total_records_per_page;
+$previous_page = $page_no - 1;
+$next_page = $page_no + 1;
+$adjacents = "2"; 
 
-	$result_count = mysqli_query($conn,"SELECT DISTINCT COUNT( *) As total_records FROM animes   LEFT JOIN genres ON animes.animecode = genres.animeid   LEFT JOIN themes ON animes.animecode = themes.animeid ".$catagory." GROUP BY animes.animecode");
-	$result_count = mysqli_query($conn, "SELECT COUNT(DISTINCT animes.animecode) AS total_records FROM animes LEFT JOIN genres ON animes.animecode = genres.animeid LEFT JOIN themes ON animes.animecode = themes.animeid " . $catagory);
+// Fetch anime IDs liked by the user
+$select_like_animes = mysqli_query($conn, "SELECT `animes_id` FROM `likes` WHERE `user_id` = {$_SESSION['id']} AND `rate` = 1");
+$anime_ids = [];
+while ($row = mysqli_fetch_assoc($select_like_animes)) {
+    $anime_ids[] = $row['animes_id'];
+}
+$anime_ids_string = implode(",", $anime_ids);
+$category = "WHERE `animes`.`id` IN ($anime_ids_string)";
 
-    $total_records = mysqli_fetch_array($result_count);
-	$total_records = $total_records['total_records'];
+// Count total records
+$result_count = mysqli_query($conn, "SELECT COUNT(DISTINCT `animes`.`animecode`) AS total_records FROM `animes` LEFT JOIN `genres` ON `animes`.`animecode` = `genres`.`animeid` LEFT JOIN `themes` ON `animes`.`animecode` = `themes`.`animeid` " . $category);
+
+if ($result_count) {
+    $total_records_array = mysqli_fetch_array($result_count);
+    $total_records = $total_records_array['total_records'];
     $total_no_of_pages = ceil($total_records / $total_records_per_page);
-	$second_last = $total_no_of_pages - 1; // total page minus 1
-    $result = mysqli_query($conn, "SELECT DISTINCT animes.*, genres.*, themes.* FROM animes LEFT JOIN genres ON animes.animecode = genres.animeid LEFT JOIN themes ON animes.animecode = themes.animeid " . $catagory ." GROUP BY animes.animecode");
-    $result = mysqli_query($conn, "SELECT DISTINCT animes.*, genres.*, themes.* FROM animes LEFT JOIN genres ON animes.animecode = genres.animeid LEFT JOIN themes ON animes.animecode = themes.animeid " . $catagory . " GROUP BY animes.animecode ");
+    $second_last = $total_no_of_pages - 1; // total page minus 1
 
-        }
-    while($row = mysqli_fetch_array($result)){
+    // Fetch data for the current page
+    $result = mysqli_query($conn, "SELECT DISTINCT `animes`.* FROM `animes`  " . $category );
+}
+
+while( $row = mysqli_fetch_array($result)){
 ?>
+
 
 
 <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 mb-5">
@@ -89,8 +61,7 @@ if (isset($_GET['page_no']) && $_GET['page_no']!="") {
         </figcaption>                   
     </figure>
     <div class="d-flex justify-content-between tm-text-gray">
-        <span class="tm-text-gray-light"><?php echo $row['adddate']?></span>
-        <span>9,906 views</span>
+
     </div>
 </div>  
 

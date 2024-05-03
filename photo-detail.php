@@ -1,4 +1,11 @@
 <!DOCTYPE html>
+
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+?>
 <?php
 $cookie_name = 'animeid';
 
@@ -121,6 +128,55 @@ p, .tm-text-gray{
 
 
 
+                        .rated {
+                            float: left;
+                            height: 80px; /* Adjust height to accommodate larger stars */
+                            padding: 0 5px;
+                        }
+
+                        .rated:not(:checked) > input {
+                            position: absolute;
+                            top: -9999px;
+                        }
+
+                        .rated:not(:checked) > label {
+                            float: right;
+                            width: 1em;
+                            overflow: hidden;
+                            white-space: nowrap;
+                            cursor: default; /* Change cursor to default */
+                            font-size: 50px; /* Increase font size for larger stars */
+                            color: #ccc;
+                        }
+
+                        .rated:not(:checked) > label:before {
+                            content: '★    ';
+                        }
+
+                        .rated > input:checked ~ label {
+                            color: #ffc700;
+                        }
+
+                        .rated:not(:checked) > label:hover,
+                        .rated:not(:checked) > label:hover ~ label {
+                            color: #deb217;
+                        }
+
+                        .rated > input:checked + label:hover,
+                        .rated > input:checked + label:hover ~ label,
+                        .rated > input:checked ~ label:hover,
+                        .rated > input:checked ~ label:hover ~ label,
+                        .rated > label:hover ~ input:checked ~ label {
+                            color: #c59b08;
+                        }
+
+
+
+
+
+
+
+
 .bookmark-btn {
     height: 50px;
     width: 150px;
@@ -174,6 +230,11 @@ p, .tm-text-gray{
 
 include('nav_bar.php');
 ?>
+
+
+
+
+
     <div class="tm-hero d-flex justify-content-center align-items-center" data-parallax="scroll" data-image-src="sitepng\banner_<?php echo $satir_anime['imgnames']?>.jpg">
 
 
@@ -187,16 +248,17 @@ include('nav_bar.php');
 
 
 
-            <?php
+            <?php        
+            $bookmark_count_query = mysqli_query($conn, "SELECT COUNT(*) FROM likes WHERE animes_id='".$satir_anime['id']."' AND rate=1");
+                    if($bookmark_count_query) {
+                        $bookmark_count_result = mysqli_fetch_all($bookmark_count_query);
+                        $bookmark_count = $bookmark_count_result[0][0];
+                    } else {
+                        $bookmark_count = 0; // or handle the error in some other way
+                    }
     if(isset($_SESSION['user_name'])){
         $user_id = $_SESSION['id'];
-        $bookmark_count_query = mysqli_query($conn, "SELECT COUNT(*) FROM likes WHERE animes_id='".$satir_anime['id']."' AND rate=1");
-        if($bookmark_count_query) {
-            $bookmark_count_result = mysqli_fetch_all($bookmark_count_query);
-            $bookmark_count = $bookmark_count_result[0][0];
-        } else {
-            $bookmark_count = 0; // or handle the error in some other way
-        }
+
         
         $status_query = mysqli_query($conn, "SELECT rate FROM likes WHERE animes_id='".$satir_anime['id']."' AND user_id=$user_id");
         if($status_query) {
@@ -212,8 +274,8 @@ include('nav_bar.php');
          ?> 
 
 <form method="post"> 
-    <button type="submit" name="button1" value="Button1" class="bookmark-btn <?php if($user_id==0){echo "disabled";}?> <?php if(isset($status) && $status==1){echo "active";} else {echo "inactive";}?>" data-id="<?php echo $satir_anime['id']; ?>">
-        <i class="fa fa-bookmark"></i>
+    <button type="submit" name="button1" value="Button1" class="bookmark-btn <?php if(isset($status) && $status==1){echo "active";} else {echo "inactive";}?>"   <?php if($user_id==0){echo "disabled";}?>     data-id="<?php echo $satir_anime['id']; ?>">
+        <i class="fa ">👍</i>
         <span data-count="<?php echo $bookmark_count?>"><?php echo $bookmark_count?></span>
     </button>
 </form>
@@ -266,22 +328,23 @@ include('nav_bar.php');
                     <div style="margin-top: 50px;">
                         <h3 class="tm-text-gray-dark mb-3">Genre</h3>    
                         <div class="row col-xl-8 col-lg-10 col-md-6 col-sm-12">
-                        <span class="tm-text-gray-dark">Japanese:</span><span class="tm-text-primary"><?php echo $satir_anime['Synonyms']?></span>
-                                    <div class="rate">
-                                        <input type="radio" id="star5" name="rate" value="5" />
-                                        <label for="star5" title="text">5 stars</label>
-                                        <input type="radio" id="star4" name="rate" value="4" />
-                                        <label for="star4" title="text">4 stars</label>
-                                        <input type="radio" id="star3" name="rate" value="3" />
-                                        <label for="star3" title="text">3 stars</label>
-                                        <input type="radio" id="star2" name="rate" value="2" />
-                                        <label for="star2" title="text">2 stars</label>
-                                        <input type="radio" id="star1" name="rate" value="1" />
-                                        <label for="star1" title="text">1 star</label>
-                                    </div>
+                        <span class="tm-text-gray-dark">Japanese:</span>
+                        <div class="rated">
+                            <input type="radio" disabled id="star5" name="rate" value="5" />
+                            <label for="star5" title="text">5 stars</label>
+                            <input type="radio" disabled id="star4" name="rate" value="4" />
+                            <label for="star4" title="text">4 stars</label>
+                            <input type="radio" disabled id="star3" name="rate" value="3" checked />
+                            <label for="star3" title="text">3 stars</label>
+                            <input type="radio" disabled id="star2" name="rate" value="2" />
+                            <label for="star2" title="text">2 stars</label>
+                            <input type="radio" disabled id="star1" name="rate" value="1" />
+                            <label for="star1" title="text">1 star</label>
+                        </div>
+
                         </div>
                         <div class="row col-xl-8 col-lg-10 col-md-6 col-sm-12">
-                        <span class="tm-text-gray-dark">Japanese:</span><span class="tm-text-primary"><?php echo $satir_anime['Synonyms']?></span>
+                        <span class="tm-text-gray-dark">Japanese:</span>
 
                                     <div class="rate">
                                         <input type="radio" id="star5" name="rate" value="5" />
