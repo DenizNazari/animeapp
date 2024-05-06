@@ -157,284 +157,60 @@ body {font-family: Arial, Helvetica, sans-serif;}
     <title>Document</title>
 </head>
 <body>
-  
-<link rel="stylesheet" href="css/dark-mode.css">
-<?php 
-include('nav_bar.php');
+ 
+<?php
+include("nav_bar.php");
+
 ?>
-<div class="container">
-    <div class="main-body">
+
+
+  
+ 
+
+    <?php
+if (isset($_GET['query'])) {
+    $search_query = mysqli_real_escape_string($conn, $_GET['search']);
+    $result = mysqli_query($conn, "SELECT * FROM animes WHERE anime_name LIKE '%$search_query%'");
+} else {
     
-    <div   class="row tm-mb-90">            
-            <div  class="col-xl-4 col-lg-7 col-md-6 col-sm-12 ">
-                <div style="background-color:<?php echo $satir_anime['page_color_2']?>;" class="tm-bg-gray tm-video-details">
+}
+?>
 
-                <div class="mr-4 mb-2">
-                <h3 class="tm-text-gray-dark mb-3">Choose name anime</h3>    
+    <div class="container-fluid tm-container-content tm-mt-60">
+        <div class="row mb-4">
+        <h2  class="col-6 tm-text-primary">
+        Animes:</h2>
 
-                            <span class="tm-text-gray-dark"> </span><input cols="40" class="tm-text-primary" id="nameAnime" value=" " >
-                        </div>
 
-                <h3 class="tm-text-gray-dark mb-3">Choose Image poster</h3>    
 
-                <img src="sitepng\site_empty.jpg"  alt="Image" class="img-fluid"  width="250"    style="object-fit: contain;" height="250">
 
 
-                <div>
-                    <label class="form-label"> </label>
-                    <input class="form-control" type="file" id="formFile">
-                </div>
+  <script>
 
-                <h3 class="tm-text-gray-dark mb-3">Choose Image banner</h3>    
-
-                <img src="sitepng\site_empty.jpg"  alt="Image" class="img-fluid"  width="250"    style="object-fit: contain;" height="250">
-
-
-                <div>
-                    <label class="form-label"> </label>
-                    <input class="form-control" type="file" id="formFile">
-                </div>
-
-                <h3 class="tm-text-gray-dark mb-3">Background color picker </h3>    
-
-                <form>
-                    <label for="b_favcolor">Select your favorite color:</label>
-                    <input type="color" id="b_favcolor" name="b_favcolor" value="#ff0000">
-                </form>
-
-                <div id="b_selectedColor"></div>
-
-                <script>
-                    const backgroundcolorPicker = document.getElementById("b_favcolor");
-                    const backgroundselectedColorDiv = document.getElementById("b_selectedColor");
-
-                    backgroundcolorPicker.addEventListener("input", function() {
-                        const backgroundselectedColor = backgroundcolorPicker.value;
-                        backgroundselectedColorDiv.innerHTML = `<p>Your selected color is: <span style="color:${backgroundselectedColor};">${backgroundselectedColor}</span></p>`;
-                    });
-                </script>
-
-                    
-
-
-                    <h3 class="tm-text-gray-dark mb-3">page color picker </h3>    
-
-
-
-                    <form>
-                        <label for="favcolor">Select your favorite color:</label>
-                        <input type="color" id="favcolor" name="favcolor" value="#ff0000">
-                    </form>
-
-                    <div id="selectedColor"></div>
-
-                    <script>
-                        const colorPicker = document.getElementById("favcolor");
-                        const selectedColorDiv = document.getElementById("selectedColor");
-
-                        colorPicker.addEventListener("input", function() {
-                            const selectedColor = colorPicker.value;
-                            selectedColorDiv.innerHTML = `<p>Your selected color is: <span style="color:${selectedColor};">${selectedColor}</span></p>`;
-                        });
-                    </script>
-
-
-
-
-                </div>
-            </div>
-        <div class="col-xl-4 col-lg-5 col-md-6 col-sm-12">
-                <div style="background-color:<?php echo $satir_anime['page_color_2']?>;" class="tm-bg-gray tm-video-details">
-                    <h3 class="tm-text-gray-dark mb-3">Synopsis</h3>
-                    <p class="mb-4">
-                    <form class="tm-text-primary"><textarea rows="5" cols="40"></textarea></form>
-                    </p>
-                    <div>
-                        <h3 class="tm-text-gray-dark mb-3">details</h3>
-                        <div class="mr-4 mb-2">
-                            <span class="tm-text-gray-dark">Synonyms:</span><form class="tm-text-primary">
-
-
-                            <textarea rows="2" cols="40">
-                            </textarea>
-                            </form>
-                        </div>
-                        <div class="mr-4 mb-2">
-                            <span class="tm-text-gray-dark">Japanese:</span><form class="tm-text-primary">
-
-
-<textarea rows="2" cols="40">
-</textarea>
-
-
-
-</form>
-                        </div>                        
-                        <div class="mr-4 mb-2">
-                            <span class="tm-text-gray-dark">Type:</span><form class="tm-text-primary">
-
-
-<textarea rows="2" cols="40">
-</textarea>
-
-
-
-</form>
-                        </div>
-                        <div class="mr-4 mb-2">
-                            <span class="tm-text-gray-dark">Episodes:</span><form class="tm-text-primary">
-
-
-<textarea rows="2" cols="40">
-</textarea>
-
-
-
-</form>
-                        </div>
-                        <div class="mr-4 mb-2">
-                            <span class="tm-text-gray-dark">Status:</span><form class="tm-text-primary">
-
-
-<textarea rows="2" cols="40">
-</textarea>
-
-
-
-</form>
-                        </div>
-                        <div class="mr-4 mb-2">
-                            <span class="tm-text-gray-dark">Aired:</span>
-<form class="tm-text-primary"><textarea rows="2" cols="40"></textarea></form>
-                        </div>
-                        <div class="mr-4 mb-2">
-                            <span class="tm-text-gray-dark">Premiered:</span><form class="tm-text-primary">
-
-
-<textarea rows="2" cols="40">
-</textarea>
-
-
-
-</form>
-                        </div>
-                        <div class="mr-4 mb-2">
-                            <span class="tm-text-gray-dark">Broadcast:</span><form class="tm-text-primary">
-
-
-<textarea rows="2" cols="40">
-</textarea>
-
-
-
-</form>
-                        </div>
-                        <div class="mr-4 mb-2">
-                            <span class="tm-text-gray-dark">Producers:</span><form class="tm-text-primary">
-
-
-<textarea rows="2" cols="40">
-</textarea>
-
-
-
-</form>
-                        </div>
-                        <div class="mr-4 mb-2">
-                            <span class="tm-text-gray-dark">Licensors:</span><form class="tm-text-primary">
-
-
-<textarea rows="2" cols="40">
-</textarea>
-
-
-
-</form>
-                        </div>
-                        <div class="mr-4 mb-2">
-                            <span class="tm-text-gray-dark">Studios:</span><form class="tm-text-primary">
-
-
-<textarea rows="2" cols="40">
-</textarea>
-
-
-
-</form>
-                        </div>
-                  
-                    </div>
-             
-                </div>
-       </div>
-        <div class="col-xl-4 col-lg-5 col-md-6 col-sm-12">
-                <div style="background-color:<?php echo $satir_anime['page_color_2']?>;" class="tm-bg-gray tm-video-details">
-                <h3 class="tm-text-gray-dark mb-3">youtube fragman link</h3>
-                    <p class="mb-4">
-                    <form class="tm-text-primary"><textarea rows="2" cols="40"></textarea></form>
-                    </p>
-
-
-                    <div class="mb-4">
-                        <h3 class="tm-text-gray-dark mb-3">Background</h3>
-                            <p>
-                            <form class="tm-text-primary"><textarea rows="5" cols="40"></textarea></form>
-                            </p>
-                    </div>
-
-
-                    <div style="margin-top: 50px;">
-                        <h3 class="tm-text-gray-dark mb-3">Themes</h3>
-                        
-                                        <script> 
-                                        $(document).ready(function(){        
-                                        var tagInputEle = $('#thema-input');
-                                        tagInputEle.tagsinput();
-                                        });
-                                        </script>
-
-                                        <input type="text" cols="60" class="form-control" name="city" id="thema-input" />
-
-
-
-                    </div>
-
-                    <div style="margin-top: 50px;">
-                        <h3 class="tm-text-gray-dark mb-3">Genre</h3>       
-                            
-                                        <script> 
-                                        $(document).ready(function(){        
-                                        var tagInputEle = $('#genre-input');
-                                        tagInputEle.tagsinput();
-                                        });
-                                        </script>
-
-                                        <input type="text" cols="40" class="form-control" name="city" id="genre-input" />
-
-                    </div>
-
-
-
-
-
-
-                    <div class="container justify-content-center mt-9 border-left border-right">
-    <div class="d-flex justify-content-center pt-3 pb-2">
-
-
-
-    </div>
-
-</div>
-
-
-
-
-
-
+    $("#chkbx").click(function(){
+      if($("input:checked")){
+        $('body').toggleClass('bk')
+      } 
+    })
+  </script>
 
 
         </div>
-    </div>
+        <div class="row tm-mb-90 tm-gallery">
+        
+<?php
+include('user_added_animes_reguest_true.php');
+
+?>
+</div>
+<div class="row tm-mb-90">
+<?php
+include('footer.php');
+
+?>
+</div>
+    
+    <script src="js/plugins.js"></script>
+ 
 </body>
 </html>
