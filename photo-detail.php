@@ -222,10 +222,8 @@ p, .tm-text-gray{
 
 </style>
 
-
-
 </head>
-<body style="background-color:<?php echo $satir_anime['page_color_1']?>;">
+<body >
     <?php
 
 include('nav_bar.php');
@@ -249,29 +247,30 @@ include('nav_bar.php');
 
 
             <?php        
-            $bookmark_count_query = mysqli_query($conn, "SELECT COUNT(*) FROM likes WHERE animes_id='".$satir_anime['id']."' AND rate=1");
-                    if($bookmark_count_query) {
-                        $bookmark_count_result = mysqli_fetch_all($bookmark_count_query);
-                        $bookmark_count = $bookmark_count_result[0][0];
-                    } else {
-                        $bookmark_count = 0; // or handle the error in some other way
-                    }
-    if(isset($_SESSION['user_name'])){
-        $user_id = $_SESSION['id'];
+$bookmark_count_query = mysqli_query($conn, "SELECT COUNT(*) FROM likes WHERE animes_id='".$satir_anime['id']."' AND rate=1");
+if($bookmark_count_query) {
+    $bookmark_count_result = mysqli_fetch_all($bookmark_count_query);
+    $bookmark_count = isset($bookmark_count_result[0][0]) ? $bookmark_count_result[0][0] : 0;
+} else {
+    $bookmark_count = 0; // or handle the error in some other way
+}
 
-        
-        $status_query = mysqli_query($conn, "SELECT rate FROM likes WHERE animes_id='".$satir_anime['id']."' AND user_id=$user_id");
-        if($status_query) {
-            $status_result = mysqli_fetch_all($status_query);
-            $status = $status_result[0][0];
-        } else {
-            $status = null; // or handle the error in some other way
-        }
+if(isset($_SESSION['user_name'])){
+    $user_id = $_SESSION['id'];
+
+    $status_query = mysqli_query($conn, "SELECT rate FROM likes WHERE animes_id='".$satir_anime['id']."' AND user_id=$user_id");
+    if($status_query) {
+        $status_result = mysqli_fetch_all($status_query);
+        $status = !empty($status_result) ? $status_result[0][0] : null;
+    } else {
+        $status = null; // or handle the error in some other way
     }
-    else{
-        $user_id=0;
-    }
-         ?> 
+}
+else{
+    $user_id=0;
+}
+?> 
+
 
 <form method="post"> 
     <button type="submit" name="button1" value="Button1" class="bookmark-btn <?php if(isset($status) && $status==1){echo "active";} else {echo "inactive";}?>"   <?php if($user_id==0){echo "disabled";}?>     data-id="<?php echo $satir_anime['id']; ?>">
@@ -322,7 +321,7 @@ include('nav_bar.php');
 
         <div   class="row tm-mb-90">            
             <div  class="col-xl-4 col-lg-7 col-md-6 col-sm-12 ">
-                <div style="background-color:<?php echo $satir_anime['page_color_2']?>;" class="tm-bg-gray tm-video-details">
+                <div  class="tm-bg-gray tm-video-details">
                     <img src="sitepng\site_<?php echo $satir_anime['imgnames']?>.jpg" alt="Image" class="img-fluid">
 
                     <div style="margin-top: 50px;">
@@ -366,7 +365,7 @@ include('nav_bar.php');
                 </div>
             </div>
         <div class="col-xl-4 col-lg-5 col-md-6 col-sm-12">
-                <div style="background-color:<?php echo $satir_anime['page_color_2']?>;" class="tm-bg-gray tm-video-details">
+                <div class="tm-bg-gray tm-video-details">
                     <h3 class="tm-text-gray-dark mb-3">Synopsis</h3>
                     <p class="mb-4">
                         
@@ -445,7 +444,7 @@ include('nav_bar.php');
                 </div>
        </div>
         <div class="col-xl-4 col-lg-5 col-md-6 col-sm-12">
-                <div style="background-color:<?php echo $satir_anime['page_color_2']?>;" class="tm-bg-gray tm-video-details">
+                <div  class="tm-bg-gray tm-video-details">
                     <iframe width="100%" height="345" src="https://www.youtube.com/embed/<?php echo  $satir_anime['youtubelink']?>">
                     </iframe>
                     <div class="mb-4">
@@ -485,18 +484,23 @@ if(isset($_SESSION['user_name']))
     $sorgu_msj = mysqli_query($conn, "SELECT * FROM mesages WHERE animecode='" . $_animeid . "'");
     if ($sorgu_msj) {
         while ($while_msj = mysqli_fetch_array($sorgu_msj)) {
-            $sorgu_user = mysqli_query($conn, "SELECT username FROM user WHERE usercode='" . $while_msj['userid'] . "'");
+            $sorgu_user = mysqli_query($conn, "SELECT username,user_png FROM user WHERE usercode='" . $while_msj['userid'] . "'");
             if ($sorgu_user) {
-                $say_user = mysqli_fetch_array($sorgu_user);
+                $say_user = mysqli_fetch_array($sorgu_user); // Fetch user as an array
+
+                $say_user_name = $say_user['username']; // Extract username from the array
+                $say_user_png = $say_user['user_png']; // Extract user_png from the array
+
             } else {
-                $say_user = array('username' => 'Unknown'); // Provide a default value if user not found
+                $say_user_name = 'Unknown'; // Provide a default value if user not found
+                $say_user_png = 'default.png'; // Provide a default value for user_png
             }
     ?>
             <div class="d-flex justify-content-center py-2">
                 <div class="second py-2 px-2">
                     <span class="text1"><?php echo $while_msj["text"] ?></span>
                     <div class="d-flex justify-content-between py-1 pt-2">
-                        <div><img  src="profilpngs/<?php echo $_SESSION['user_png']?>" width="18"><span class="text2"><?php echo $say_user['username'] ?></span></div>
+                        <div><img  src="profilpngs/<?php echo $say_user_png ?>" width="18"><span class="text2"><?php echo $say_user_name ?></span></div>
                     </div>
                 </div>
             </div>
@@ -513,14 +517,6 @@ if(isset($_SESSION['user_name']))
 </div>
 
 <script>
-
-$('.button').click(function() {
-    $('.label').html(function(i, val) { 
-      return (val*1) + 0.5;
-    });
-});
-
-
 
     function postComment() {
         var commentInput = document.getElementById("commentInput");
@@ -573,7 +569,7 @@ $('.button').click(function() {
 
 
 
-
+<!-- 
         <div class="row mb-4">
             <h2 class="col-12 tm-text-primary">
                 Related Photos
@@ -587,11 +583,11 @@ $('.button').click(function() {
 
 
               
-              <?php
-                            $sorgu_anime = mysqli_query($conn,"select * from `character` where animecode='".$_animeid."'");
-                            $say_anime = mysqli_num_rows($sorgu_anime);
-                            if ( $say_anime > 0 ) {
-                                    while ( $while_aime = mysqli_fetch_array($sorgu_anime) ) {
+              ?php
+                            // $sorgu_anime = mysqli_query($conn,"select * from `character` where animecode='".$_animeid."'");
+                            // $say_anime = mysqli_num_rows($sorgu_anime);
+                            // if ( $say_anime > 0 ) {
+                            //         while ( $while_aime = mysqli_fetch_array($sorgu_anime) ) {
                             ?>
                                                           
             <div class="card">
@@ -599,33 +595,33 @@ $('.button').click(function() {
                   <div class="user-card">
                     <div class="level center"></div>
                     <div class="points center">
-                        <?php echo  $while_aime['character japon name']?>
+                        ?php echo  $while_aime['character japon name']?>
                     </div>
                 
-                    <img style="border-bottom: 1rem solid white;" src="<?php echo  $while_aime['imgsource']?>" class="image--cover">
+                    <img style="border-bottom: 1rem solid white;" src="?php echo  $while_aime['imgsource']?>" class="image--cover">
 
                   </div>
 
                   <div class="more-info">
-                        <h1><?php echo  $while_aime['charactername']?></h1>
-                            <p><?php echo  $while_aime['details']?></p>
+                        <h1>?php echo  $while_aime['charactername']?></h1>
+                            <p>?php echo  $while_aime['details']?></p>
 
                     </div>
                 </div>
                 <div  class="general">
-                  <h1><?php echo  $while_aime['charactername']?></h1>
-                  <p><?php echo  $while_aime['about']?> </p>
-                  <span class="more"><?php echo  $while_aime['position']?> </span>
+                  <h1>?php echo  $while_aime['charactername']?></h1>
+                  <p>?php echo  $while_aime['about']?> </p>
+                  <span class="more">?php echo  $while_aime['position']?> </span>
                 </div>
               </div>
             
         
                                 
-                        <?php }}?>
+                        <php }}?>
 
 
 
-              </div>
+              </div> -->
 
             
         </div> 

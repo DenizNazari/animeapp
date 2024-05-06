@@ -17,6 +17,18 @@ if(isset($_POST['submit'])){
             $_SESSION['isAdmin']= $row['isAdmin'];
             $_SESSION['user_png'] = $row['user_png'];
 
+
+
+            $_SESSION['fullName'] = $row['fullName'];
+
+            $_SESSION['Email'] = $row['Email'];
+
+            $_SESSION['Phone'] = $row['Phone'];
+
+            $_SESSION['Address'] = $row['Address'];
+
+            $_SESSION['Mobile'] = $row['Mobile'];
+
             header("Location: index.php");
             exit();
         } else {

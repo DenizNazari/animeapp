@@ -68,7 +68,7 @@ body {
   justify-content: center;
   transition: background-color .25s;
   color: #1e1e1e;
-  background: linear-gradient(to bottom right, #eefff400 25%, #a0ffd900 50%, #1e1e1e 75%, #01072a);
+  background: #0E0E0E;
   background-size: 300% 300%;
   background-position: top left;
   transition: background-position .5s;
@@ -81,7 +81,11 @@ html {
 }
 body:has(#darkmode-toggle:checked) {
   background-position: 100% 100%;
-  color: #d0d0d0;
+  color: #FFC6F5;
+}
+ .container-fluid {
+  color: #FFC6F5;
+
 }
 
 

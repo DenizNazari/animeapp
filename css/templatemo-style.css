@@ -156,12 +156,12 @@ a {
     text-decoration: none;
     transition: all 0.3s ease; 
 }
-a:hover { color:#009999; }
+a:hover { color:#FFC6F5; }
 .container-fluid { max-width: 1770px; }
 .tm-container-small { max-width: 1050px; }
 .btn { border-radius: 0; }
 .btn-primary {
-    background-color: #009999;
+    background-color: #495057 ;
     border: 0;
     border-radius: 5px;
     padding: 12px 50px 14px;
@@ -170,7 +170,7 @@ a:hover { color:#009999; }
 
 .btn-primary:hover,
 .btn-primary:focus {
-    background-color:#086969;
+    background-color:#495057 ;
 }
 
 .btn-primary.disabled, 
@@ -191,7 +191,7 @@ a:hover { color:#009999; }
 
 .navbar-toggler:focus { box-shadow: none; }
 .navbar-brand {
-    color: #ee2ade;
+    color: #FFC6F5;
     font-size: 1.9rem;
     
 }
@@ -207,10 +207,10 @@ a:hover { color:#009999; }
 .tm-mb-50 { margin-bottom: 50px; }
 .tm-mb-74 { margin-bottom: 74px; }
 .tm-mb-90 { margin-bottom: 90px; }
-.tm-text-primary { color: #ee2ade; }
+.tm-text-primary { color: #FFC6F5; }
 .tm-text-secondary { color: #CC6699; }
 a.tm-text-primary:hover { color:#313030; }
-.tm-bg-gray { background-color: #f2eff3; }
+.tm-bg-gray { background-color: #161616 ; }
 .tm-input-paging {
     width: 40px;
     border-radius: 0;
@@ -223,7 +223,7 @@ a.tm-text-primary:hover { color:#313030; }
 .nav-item:last-child { margin-right: 0; }
 
 .nav-link {
-    color: #464343;
+    color: #FFC6F5;
     border-bottom: 4px solid transparent;
     font-size: 1.2rem;
 }
@@ -374,7 +374,7 @@ p, .tm-text-gray { color: #999; }
 
 .tm-paging-link:hover,
 .tm-paging-link.active {
-    background-color: #009999;
+    background-color: #495057 ;
     color: #fff; 
 }
 
@@ -852,20 +852,20 @@ select:not([multiple]) {
 
 .second{
 	width: 200%;
-	background-color: white;
+	background-color: #2B2C2D ;
 	border-radius: 4px;
 	box-shadow: 1px 2px 5px #aaaaaa;
 }
 .text1{
 	font-size: 13px;
     font-weight: 500;
-    color: #56575b;
+    color: #fff;
 }
 .text2{
 	font-size: 13px;
     font-weight: 500;
     margin-left: 2px;
-    color: #56575b;
+    color: #ff98e8;
 }
 .text3{
 	font-size: 13px;

@@ -52,6 +52,12 @@ if(isset($_POST['submit'])) {
                                                               $_SESSION['isAdmin'] = $user_data['isAdmin'];
                                                               $_SESSION['user_png'] = $user_data['user_png'];
 
+                                                              $_SESSION['fullName'] =  NULL;
+                                                              $_SESSION['Email'] = NULL;
+                                                              $_SESSION['Phone'] =  NULL;
+                                                              $_SESSION['Mobile'] = NULL;
+                                                              $_SESSION['Address'] = NULL;
+
                                                   
                                                               header("Location: index.php");
                                                               exit();

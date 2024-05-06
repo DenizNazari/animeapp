@@ -17,30 +17,9 @@ if(!isset($_SESSION['user_name'])) {
 }
 ?>
 
-<?php
-
-$cookie_name = "dark-mode";
-// Check if dark mode preference is set in the URL
-if(isset($_GET["dark-mode"])) {
-    $cookie_value = $_GET["dark-mode"];
-    // Set the dark mode cookie
-    setcookie($cookie_name, $cookie_value, time() + (86400 * 30), "/");
-}
-
-// Check if the dark mode cookie is set
-$darkMode = isset($_COOKIE[$cookie_name]) ? $_COOKIE[$cookie_name] : 'light';
-?>
 
 
 
-<?php
-// if(!isset($_COOKIE[$cookie_name])) {
-//   echo "Cookie named '" . $cookie_name . "' is not set!";
-// } else {
-//   echo "Cookie '" . $cookie_name . "' is set!<br>";
-//   echo "Value is: " . $_COOKIE[$cookie_name];
-// }
-?>
 
 <link rel="stylesheet" href="css/dark-mode.css">
 
@@ -51,10 +30,6 @@ $darkMode = isset($_COOKIE[$cookie_name]) ? $_COOKIE[$cookie_name] : 'light';
                 ANIBASE
             </a>
             
-    <input type="checkbox" class="sr-only" id="darkmode-toggle" name="dark-mode"  <?php if($darkMode === 'dark') echo 'checked'; ?>  >
-        <label for="darkmode-toggle" class="toggle">
-            <span>Toggle dark mode</span>
-        </label>
 
 
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
