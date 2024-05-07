@@ -25,8 +25,13 @@ if (!isset($_GET['animeid'])) {
 
 
 include('baglan.php');
+if($_animeid[0]== "a"){
+    $sorgu_anime = mysqli_query($conn, "SELECT * FROM animes WHERE animecode='".$_animeid."'");
 
-$sorgu_anime = mysqli_query($conn, "SELECT * FROM animes WHERE animecode='".$_animeid."'");
+}
+elseif($_animeid[0]== "r"){
+    $sorgu_anime = mysqli_query($conn, "SELECT * FROM request_animes WHERE animecode='".$_animeid."'");
+}
 
 if (!$sorgu_anime) {
     die('Query failed: ' . mysqli_error($conn));
@@ -467,7 +472,7 @@ else{
 
 
     <?php
-if(isset($_SESSION['user_name'])) 
+if(isset($_SESSION['user_name']) && $_animeid[0] != 'r') 
 {
     echo '<input type="text" name="text"   placeholder="+ Add a message" class="form-control addtxt" id="commentInput"> ';
 

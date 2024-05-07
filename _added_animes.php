@@ -7,7 +7,16 @@ include('baglan.php');
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+if(!isset($_SESSION['user_name'])) {
+    header("Location: sign_in.php");
+    exit();
+}
+
+
+$request_anime=1;
+
 ?>
+
 <html lang="en">
 <head>
     <style>
@@ -143,8 +152,14 @@ body {font-family: Arial, Helvetica, sans-serif;}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-  
+  <style>
+    .scale-image {
+    width: 420px;
+    height: 580px;
+    object-fit: cover;
+}
 
+</style>
 
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css" integrity="sha512-xmGTNt20S0t62wHLmQec2DauG9T+owP9e6VU8GigI0anN7OXLip9i7IwEhelasml2osdxX71XcYm6BQunTQeQg==" crossorigin="anonymous" />
@@ -179,7 +194,7 @@ if (isset($_GET['query'])) {
     <div class="container-fluid tm-container-content tm-mt-60">
         <div class="row mb-4">
         <h2  class="col-6 tm-text-primary">
-        Animes:</h2>
+       Added Animes:</h2>
 
 
 

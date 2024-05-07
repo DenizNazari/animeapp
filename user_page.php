@@ -15,35 +15,6 @@ include('baglan.php');
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css'>
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -62,9 +33,12 @@ include('baglan.php');
 
 
     <style>
+      .list-group-item {
+        background-color: #0E0E0E;
+      }
         body{
     margin-top:20px;
-    color: #1a202c;
+    color: #ff98e8 ;
     text-align: left;
     background-color: #e2e8f0;    
 }
@@ -186,7 +160,10 @@ body {font-family: Arial, Helvetica, sans-serif;}
 <?php 
 include('nav_bar.php');
 ?>
-<div class="container">
+<style>
+
+</style>
+<div class="container" style="color: #FFC6F5;">
     <div class="main-body">
     
 
@@ -326,7 +303,7 @@ $request_comment_count_msj = mysqli_fetch_array($sorgu_msj)['request_comment_cou
                       <a class="btn btn-outline-secondary" target="__blank" href="_add_anime.php">add anime</a>
                       <a class="btn btn-outline-secondary" target="__blank" href="_added_animes.php">added anime</a>
                       
-                      <a class="btn btn-outline-secondary" target="__blank" href="_request_animes.php">reguest anime</a>
+                      <a class="btn btn-outline-secondary" target="__blank" href="_reguest_animes.php">reguest anime</a>
 
                     </div>
 

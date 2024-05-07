@@ -3,6 +3,12 @@
 include('baglan.php');
 ?>
 
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$request_anime=0;
+?>
 <html lang="en">
 <head>
     <style>
@@ -117,45 +123,16 @@ body {font-family: Arial, Helvetica, sans-serif;}
     object-fit: cover;
 }
 
+
+
+.bootstrap-tagsinput .tag {
+   background: red;
+   padding: 4px;
+   font-size: 14px;
+}
+
+
 </style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css'>
@@ -167,27 +144,70 @@ body {font-family: Arial, Helvetica, sans-serif;}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <style>
+    .scale-image {
+    width: 420px;
+    height: 580px;
+    object-fit: cover;
+}
+
+</style>
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css" integrity="sha512-xmGTNt20S0t62wHLmQec2DauG9T+owP9e6VU8GigI0anN7OXLip9i7IwEhelasml2osdxX71XcYm6BQunTQeQg==" crossorigin="anonymous" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.min.js" integrity="sha512-9UR1ynHntZdqHnwXKTaOm1s6V9fExqejKvg5XMawEMToW4sSw+3jtLrYfZPijvnwnnE8Uol1O9BcAskoxgec+g==" crossorigin="anonymous"></script>
+
+
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
 <body>
-  
-<link rel="stylesheet" href="css/dark-mode.css">
-<?php 
-include('nav_bar.php');
+ 
+<?php
+include("nav_bar.php");
+
 ?>
-<div class="container">
-    <div class="main-body">
-    
+
+
+  
+ 
+    <div class="container-fluid tm-container-content tm-mt-60">
+        <div class="row mb-4">
+        <h2  class="col-6 tm-text-primary">
+       Added Animes:</h2>
 
 
 
+
+
+  <script>
+
+    $("#chkbx").click(function(){
+      if($("input:checked")){
+        $('body').toggleClass('bk')
+      } 
+    })
+  </script>
 
 
         </div>
-    </div>
+        <div class="row tm-mb-90 tm-gallery">
+        
+<?php
+include('user_added_animes_reguest_true.php');
+
+?>
+</div>
+<div class="row tm-mb-90">
+<?php
+include('footer.php');
+
+?>
+</div>
+    
+    <script src="js/plugins.js"></script>
+ 
 </body>
 </html>

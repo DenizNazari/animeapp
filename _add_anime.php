@@ -168,22 +168,26 @@ include('nav_bar.php');
 
 
 
-<script>
-    function postAnime() {
-        var  name = document.getElementsByName("name")[0].value;
-        var  synonyms = document.getElementsByName("synonyms")[0].value;
-        var  japanese = document.getElementsByName("japanese")[0].value;
-        var  type = document.getElementsByName("type")[0].value;
-        var  episodes = document.getElementsByName("episodes")[0].value;
-        var  status = document.getElementsByName("status")[0].value;
-        var  aired = document.getElementsByName("aired")[0].value;
-        var  premiered = document.getElementsByName("premiered")[0].value;
-        var   broadcast = document.getElementsByName("broadcast")[0].value;
-        var   producers = document.getElementsByName("producers")[0].value;
-        var   licensors = document.getElementsByName("licensors")[0].value;
-        var   studios = document.getElementsByName("studios")[0].value;
-        var   youtube = document.getElementsByName("youtube")[0].value;
-        var   background = document.getElementsByName("background")[0].value;
+    <script>
+    function postAnime(event) {
+        event.preventDefault();
+        var name = document.getElementsByName("name")[0].value;
+        var synopsis = document.getElementsByName("synopsis")[0].value;
+        var synonyms = document.getElementsByName("synonyms")[0].value;
+        var japanese = document.getElementsByName("japanese")[0].value;
+        var type = document.getElementsByName("type")[0].value;
+        var episodes = document.getElementsByName("episodes")[0].value;
+        var status = document.getElementsByName("status")[0].value;
+        var aired = document.getElementsByName("aired")[0].value;
+        var premiered = document.getElementsByName("premiered")[0].value;
+        var broadcast = document.getElementsByName("broadcast")[0].value;
+        var producers = document.getElementsByName("producers")[0].value;
+        var licensors = document.getElementsByName("licensors")[0].value;
+        var studios = document.getElementsByName("studios")[0].value;
+        var youtube = document.getElementsByName("youtube")[0].value;
+        var background = document.getElementsByName("background")[0].value;
+        var themas = document.getElementsByName("themas")[0].value;
+        var genre  = document.getElementsByName("genre")[0].value;
 
         if (name !== "" && type !== "" && episodes !== "" && status !== "" && aired !== "" && premiered !== "" && broadcast !== "" && producers !== "" && licensors !== "" && studios !== "" && youtube !== "" && background !== "") {
             var xhttp = new XMLHttpRequest();
@@ -192,25 +196,47 @@ include('nav_bar.php');
 
             xhttp.onreadystatechange = function () {
                 if (xhttp.readyState === 4 && xhttp.status === 200) {
-                    console.log(xhttp.responseText);
-
-                    var commentsContainer = document.getElementById("commentsContainer");
-                    var newCommentDiv = document.createElement("div");
-                    newCommentDiv.innerHTML = xhttp.responseText;
-                    commentsContainer.appendChild(newCommentDiv);
-
-                    commentInput.value = "";
+                    alert(xhttp.responseText+" bu ");
+                    document.getElementById("animeForm").reset();
                 }
             };
-            var params = "comment=" + encodeURIComponent(comment) + "&animeid=" + encodeURIComponent(animeid);
+            saveImage("formFile1", "banner_" + name);
+            saveImage("formFile", "site_" + name);
+
+
+            var params = "name=" + encodeURIComponent(name) +
+                "&synopsis=" + encodeURIComponent(synopsis) +
+                "&synonyms=" + encodeURIComponent(synonyms) +
+                "&japanese=" + encodeURIComponent(japanese) +
+                "&type=" + encodeURIComponent(type) +
+                "&episodes=" + encodeURIComponent(episodes) +
+                "&status=" + encodeURIComponent(status) +
+                "&aired=" + encodeURIComponent(aired) +
+                "&premiered=" + encodeURIComponent(premiered) +
+                "&broadcast=" + encodeURIComponent(broadcast) +
+                "&producers=" + encodeURIComponent(producers) +
+                "&licensors=" + encodeURIComponent(licensors) +
+                "&studios=" + encodeURIComponent(studios) +
+                "&youtube=" + encodeURIComponent(youtube) +
+                "&background=" + encodeURIComponent(background);
+
             xhttp.send(params);
+        } else {
+        
+                    var errorDiv = document.getElementById("error-message");
+                    errorDiv.innerHTML = "Please fill in all fields.";
+                    errorDiv.style.display = "block"; 
         }
+
     }
 </script>
 
 
 
-        <form  class="tm-text-primary">
+<div id="error-message" style="display: none; color: red;"></div>
+
+<form id="animeForm" class="tm-text-primary">
+
 
                     <div   class="row tm-mb-90">            
                                                 <div  class="col-xl-4 col-lg-7 col-md-6 col-sm-12 ">
@@ -250,7 +276,7 @@ include('nav_bar.php');
 
                                                     <div>
                                                         <label class="form-label"> </label>
-                                                        <input class="form-control" type="file" id="formFile" onchange="previewImage1(event)">
+                                                        <input class="form-control" type="file" id="formFile1" onchange="previewImage1(event)">
                                                     </div>
                                                    
                                 <script>
@@ -262,6 +288,29 @@ include('nav_bar.php');
                                             }
                                             reader.readAsDataURL(event.target.files[0]);
                                         }
+                                        function saveImage(id_name, save_image_name) {
+                                        var fileInput = document.getElementById(id_name);
+                                        var file = fileInput.files[0];
+
+                                        if (file) {
+                                            var formData = new FormData();
+                                            formData.append('image', file);
+                                            formData.append('save_image_name', save_image_name);
+
+                                            var xhr = new XMLHttpRequest();
+                                            xhr.onreadystatechange = function () {
+                                                if (xhr.readyState === 4 && xhr.status === 200) {
+                                                    alert(xhr.responseText);
+                                                }
+                                            };
+                                            xhr.open('POST', 'save_image.php', true);
+                                            xhr.send(formData);
+                                        } else {
+                                            var errorDiv = document.getElementById("error-message");
+                                            errorDiv.innerHTML = "Please choose an image.";
+                                            errorDiv.style.display = "block";
+                                        }
+                                    }
                                 </script>
 
 
@@ -337,7 +386,7 @@ include('nav_bar.php');
                                                                                     });
                                                                                     </script>
 
-                                                                                    <input type="text" cols="60" class="form-control" name="city" id="thema-input" />
+                                                                                    <input type="text" cols="60" class="form-control" name="themas" id="thema-input" />
 
 
 
@@ -353,14 +402,15 @@ include('nav_bar.php');
                                                                                     });
                                                                                     </script>
 
-                                                                                    <input type="text" cols="40" class="form-control" name="city" id="genre-input" />
+                                                                                    <input type="text" cols="40" class="form-control" name="genre" id="genre-input" />
 
                                                                 </div>
 
                                                                 <div style="margin-top: 50px;">
                                                                     <h3 class="tm-text-gray-dark mb-3">Genre</h3>       
                                                                         
-                                                                <button   class="btn btn-primary" > Add </button>
+
+                                                                    <button class="btn btn-primary" onclick="postAnime(event)">Add</button>
                                                                 </div>
                                                             </div>
 
